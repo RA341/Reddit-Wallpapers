@@ -1,8 +1,11 @@
+import os
+
 import praw
 import random
 import webbrowser
 import sys
 import socket
+from file_functions import dumpDictionary
 
 
 def receive_connection():
@@ -31,7 +34,7 @@ def main():
     reddit = praw.Reddit(
         client_id='63NRVVv_imYBeWE9Dwb-eg',
         client_secret=None,
-        user_agent='A app to download wallpapera',
+        user_agent='A app to download wallpapers',
         redirect_uri='http://localhost:8080',
     )
 
@@ -66,8 +69,10 @@ def main():
             send_message(client, "Refresh token: {}".format(refresh_token))
 
             print(refresh_token)
+            dumpDictionary('refresh_token.pickle', refresh_token)
             return 0
 
 
 if __name__ == "__main__":
+    os.mkdir('data')
     sys.exit(main())
