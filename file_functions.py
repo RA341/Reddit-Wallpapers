@@ -1,17 +1,33 @@
+import os
 import pickle
 
 
-def dumpDictionary(post_dict):
-    with open('post_dict.pickle', 'wb') as handle:
+def dumpDictionary(filename, post_dict):
+    with open('data/'+filename, 'wb') as handle:
         pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def readDictionary():
-    with open('post_dict.pickle', 'rb') as handle:
+def readDictionary(filename):
+    with open('data/'+filename, 'rb') as handle:
         return pickle.load(handle)
 
 
+def dumpList(filename, sub_list):
+    with open('data/'+filename, 'w') as f:
+        for x in sub_list:
+            f.write(x + '\n')
+
+
+def readList(filename):
+    tmp = []
+    with open('data/'+filename, 'r') as f:
+        for x in f.readlines():
+            tmp.append(x.strip())
+    return tmp
+
+
 if __name__ == '__main__':
+    os.mkdir('data')
     post_dict = {'y1aifi': 'https://i.redd.it/vzastf54s6t91.jpg', 'xxgbtz': 'https://i.redd.it/8hekpbqv29s91.jpg',
                  'x9un1w': 'https://i.redd.it/pvp6s2oywtm91.png', 'wqogt9': ['https://i.redd.it/lwgz9e1uu9i91.png',
                                                                              'https://i.redd.it/3rtlr21uu9i91.png',
@@ -137,16 +153,6 @@ if __name__ == '__main__':
                  'r9j1fp': 'https://i.redd.it/2haowd4e1r381.png', 'ra24su':
                      'https://i.redd.it/74yxxacdqv381.jpg', 'r9efid': 'https://i.redd.it/itlvqsl8tp381.jpg', 'l2z8xv':
                      'https://i.redd.it/97mb1ke5ryc61.jpg'}
-
-    print('wow')
-    dumpDictionary(post_dict)
-    o = readDictionary()
-    print('wow')
-    dumpDictionary(post_dict)
-    print(type(readDictionary()))
-    print(readDictionary() == post_dict)
-    # print(type(o))
-    # print(post_dict == b)
-    # print(b)
-    #
-    # print(type(f.read()))
+    subreddits = ['wallpapers', 'wallpaper']
+    dumpList("subreddits.txt", subreddits)
+    print(readList("subreddits.txt"))
