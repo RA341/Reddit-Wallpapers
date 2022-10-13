@@ -5,7 +5,7 @@ import random
 import webbrowser
 import sys
 import socket
-from file_functions import dumpDictionary
+from file_functions import dumpPickle
 
 
 def receive_connection():
@@ -69,10 +69,12 @@ def main():
             send_message(client, "Refresh token: {}".format(refresh_token))
 
             print(refresh_token)
-            dumpDictionary('refresh_token.pickle', refresh_token)
+            dumpPickle('refresh_token.pickle', refresh_token)
             return 0
 
 
 if __name__ == "__main__":
-    os.mkdir('data')
+    folder = 'data'
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     sys.exit(main())
