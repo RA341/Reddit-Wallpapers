@@ -38,39 +38,39 @@ def main():
         redirect_uri='http://localhost:8080',
     )
 
-    try:
-        p = reddit.user.me()
-        print(p)
-    except Exception as err:
-        if str(err) != 'invalid_grant error processing request':
-            print('LOGIN FAILURE')
-        else:
-            state = str(random.randint(0, 65000))
-            scopes = ['identity', 'history', 'read', 'edit']
-            url = reddit.auth.url(scopes, state, 'permanent')
-            print('We will now open a window in your browser to complete the login process to reddit.')
-            webbrowser.open(url)
+    # try:
+    #     p = reddit.user.me()
+    #     print(p)
+    # except Exception as err:
+    #     if str(err) != 'invalid_grant error processing request':
+    #         print('LOGIN FAILURE')
+    #     else:
+    state = str(random.randint(0, 65000))
+    scopes = ['identity', 'history', 'read']
+    url = reddit.auth.url(scopes, state, 'permanent')
+    print('We will now open a window in your browser to complete the login process to reddit.')
+    webbrowser.open(url)
 
-            client = receive_connection()
-            data = client.recv(1024).decode('utf-8')
-            param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
-            params = {key: value for (key, value) in [token.split('=')
-                                                      for token in param_tokens]}
+    client = receive_connection()
+    data = client.recv(1024).decode('utf-8')
+    param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
+    params = {key: value for (key, value) in [token.split('=')
+                                              for token in param_tokens]}
 
-            if state != params['state']:
-                send_message(client, 'State mismatch. Expected: {} Received: {}'
-                             .format(state, params['state']))
-                return 1
-            elif 'error' in params:
-                send_message(client, params['error'])
-                return 1
+    if state != params['state']:
+        send_message(client, 'State mismatch. Expected: {} Received: {}'
+                     .format(state, params['state']))
+        return 1
+    elif 'error' in params:
+        send_message(client, params['error'])
+        return 1
 
-            refresh_token = reddit.auth.authorize(params["code"])
-            send_message(client, "Refresh token: {}".format(refresh_token))
+    refresh_token = reddit.auth.authorize(params["code"])
+    send_message(client, "Refresh token: {}".format(refresh_token))
 
-            print(refresh_token)
-            dumpPickle('refresh_token.pickle', refresh_token)
-            return 0
+    print(refresh_token)
+    dumpPickle('refresh_token.pickle', refresh_token)
+    return 0
 
 
 if __name__ == "__main__":
