@@ -1,7 +1,7 @@
 import os
 import time
 import praw
-from file_functions import dumpPickle, readPickle, dumpSubreddit, readSubreddits
+from file_functions import dumpPickle, readPickle, dumpSubreddit, readSubreddits, createFolders
 import tkinter as tk
 from tkinter import filedialog
 import urllib.request
@@ -103,9 +103,7 @@ def downloadWallpapers(post_dict):
 
 
 if __name__ == '__main__':
-    folder = 'data'
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    createFolders()
 
     post_dict = getSavedWallpapers(reddit)
 
