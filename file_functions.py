@@ -5,7 +5,7 @@ def createFolders():
     if not os.path.exists(folder):
         os.makedirs(folder)
     print("Created required folders")
-    
+
 def dumpPickle(filepath, post_dict):
     with open(filepath, 'wb') as handle:
         pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -26,5 +26,9 @@ def readSubreddits(filepath):
     tmp = []
     with open(filepath, 'r') as f:
         for x in f.readlines():
-            tmp.append(x.strip())
+            s = x.strip()
+            if len(s) == 0:
+                continue
+            if s[0] not in ['/']:
+                tmp.append(s)
     return tmp
