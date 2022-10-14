@@ -5,7 +5,8 @@ import webbrowser
 import sys
 import socket
 from file_functions import dumpPickle
-
+from data_paths import token_path
+from file_functions import readPickle
 
 def receive_connection():
     """
@@ -69,10 +70,24 @@ def main():
 
     print(refresh_token)
     try:
-        dumpPickle('refresh_token.pickle', refresh_token)
+        dumpPickle(token_path, refresh_token)
         return 0
     except:
         return 1
+
+
+def redditAuthCheck():
+    token = readPickle(token_path)
+    if len(token) == 0:
+        print("No token detected")
+        # authorise using reddit_auth.py
+        if not main():
+            return readPickle(token_path)
+        else:
+            print("Could not get reddit login token")
+            print("Exiting")
+            quit(-1)
+    return token
 
 
 if __name__ == "__main__":
