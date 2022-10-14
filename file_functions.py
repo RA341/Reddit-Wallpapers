@@ -1,10 +1,13 @@
 import pickle
 import os
+
+
 def createFolders():
     folder = 'data'
     if not os.path.exists(folder):
         os.makedirs(folder)
     print("Created required folders")
+
 
 def dumpPickle(filepath, post_dict):
     with open(filepath, 'wb') as handle:
