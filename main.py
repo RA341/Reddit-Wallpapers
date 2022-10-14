@@ -1,29 +1,15 @@
 import time
 import praw
-from file_functions import dumpPickle, readPickle, dumpSubreddit, readSubreddits, createFolders
+from file_functions import dumpPickle, readPickle, readSubreddits, createFiles
 import tkinter as tk
 from tkinter import filedialog
 import urllib.request
-
-try:
-    token = readPickle('./data/refresh_token.pickle')
-except Exception as e:
-    print("Error getting token")
-    print(e)
-    quit(-1)
-
-reddit = praw.Reddit(
-    client_id='63NRVVv_imYBeWE9Dwb-eg',
-    client_secret=None,
-    refresh_token=token,
-    user_agent='A app to download wallpapers',
-)
+from data_paths import subreddits_file, token_path, downloaded_wallpapers
+from reddit_auth import redditAuthCheck
 
 
 def getSavedWallpapers(reddit):
     print("Initializing please wait....")
-    subreddits_file = './data/subreddits.txt'
-    downloaded_wallpapers = './data/downloaded_wallpaper.pickle'
 
     subreddits = readSubreddits(subreddits_file)
     post_list = {}
@@ -36,12 +22,14 @@ def getSavedWallpapers(reddit):
         saved = list(reddit.user.me().saved(limit=None))
         print('Successfully captured saved posts')
         print("There are ", len(saved), "saved posts")
+
     except Exception as e:
         print('failure to get saved posts')
         print(e)
         quit(-1)
 
     try:
+        print("Filtering posts")
         for item in saved:
             if str(item.subreddit) in subreddits:
                 if not item.is_self:
@@ -82,6 +70,7 @@ def downloadWallpapers(post_list):
         print("Empty list\nNothing to download\nExiting")
         quit(-1)
     images = 0
+    failed = 0
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askdirectory() + "/"
@@ -94,6 +83,7 @@ def downloadWallpapers(post_list):
                     urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                     images += 1
                 except Exception as e:
+                    failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
                     print(e)
         else:
@@ -102,13 +92,28 @@ def downloadWallpapers(post_list):
                 urllib.request.urlretrieve(link, file_path + "{}.png".format(key))
                 images += 1
             except Exception as e:
+                failed += 1
                 print("failed to download", key + '.png')
                 print(e)
     print("Finished")
     print("downloaded", images, 'images')
+    print("failed to download", failed, 'images')
 
 
 if __name__ == '__main__':
-    createFolders()
+    createFiles()
+    try:
+        token = redditAuthCheck()
+    except Exception as e:
+        print("Error getting token")
+        print(e)
+        quit(-1)
+    print("token", token)
+    reddit = praw.Reddit(
+        client_id='63NRVVv_imYBeWE9Dwb-eg',
+        client_secret=None,
+        refresh_token=token,
+        user_agent='A app to download wallpapers',
+    )
     posts = getSavedWallpapers(reddit)
     downloadWallpapers(posts)
