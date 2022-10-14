@@ -18,12 +18,11 @@ reddit = praw.Reddit(
 )
 
 
-def getSavedWallpapers():
-    subreddits = readSubreddits('subreddits.txt')
+def getSavedWallpapers(reddit):
+    subreddits = readSubreddits('../data/subreddits.txt')
     post_dict = {}
-    downloaded_dict = readPickle('downloaded_wallpaper.pickle')
+    downloaded_images = readPickle('../data/downloaded_wallpaper.pickle')
 
-    print("Previously downloaded list:\n", downloaded_dict)
     tmp = []
     saved = []
     start = time.perf_counter()
@@ -44,28 +43,30 @@ def getSavedWallpapers():
                         if item.is_gallery:
                             for i in list(item.media_metadata):
                                 tmp.append(item.media_metadata[i]['s']['u'].replace('preview', 'i').split('?')[0])
-                            if not downloaded_dict.get(item.id):
-                                downloaded_dict.update({item.id: item.url})
+                            if not downloaded_images.get(item.id):
+                                downloaded_images.update({item.id: tmp})
                                 post_dict[item.id] = tmp
                                 print("Adding ", item.id)
                             else:
-                                print("Skipping already downloaded ", item.id)
+                                print("Skipping", item.id, 'already downloaded')
+                            tmp = []  # resetting gallery image list
                     except Exception:
                         # print("Not a Gallery")
-                        if not downloaded_dict.get(item.id):
-                            downloaded_dict.update({item.id: item.url})
+                        if not downloaded_images.get(item.id):
+                            downloaded_images.update({item.id: item.url})
                             post_dict[item.id] = item.url
                             print("Adding ", item.id)
                         else:
-                            print("Skipping already downloaded ", item.id)
+                            print("Skipping", item.id, 'already downloaded')
     except Exception as e:
         print("curses", e)
 
     stop = time.perf_counter()
 
     print("time taken ", stop - start)
-    print("Found", len(post_dict), "saved posts from matching subreddits")
-    dumpPickle('downloaded_wallpaper.pickle', downloaded_dict)
+    print("Found", len(post_dict), "new saved posts from matching subreddits")
+    print("Previously downloaded list:\n", downloaded_images)
+    dumpPickle('../data/downloaded_wallpaper.pickle', downloaded_images)
 
     return post_dict
 
@@ -77,24 +78,4 @@ if __name__ == '__main__':
 
     post_dict = getSavedWallpapers()
 
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askdirectory()
-    file_path = file_path + "/"
-    for key in post_dict.keys():
-        link = post_dict.get(key)
-        if type(link) == list:
-            for index, data in enumerate(link):
-                print('downloading ', index, key + '.jpg')
-                try:
-                    urllib.request.urlretrieve(data, file_path + '_{}'.format(key) + '{}.jpg'.format(index))
-                except Exception as e:
-                    print("failed to download", key + '.jpg')
-                    print(e)
-        else:
-            print('downloading ', key + '.jpg')
-            try:
-                urllib.request.urlretrieve(link, file_path + "{}.jpg".format(key))
-            except Exception as e:
-                print("failed to download", key + '.jpg')
-                print(e)
+
