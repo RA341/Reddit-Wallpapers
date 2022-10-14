@@ -51,7 +51,7 @@ def getSavedWallpapers(reddit):
                                 print("Skipping", item.id, 'already downloaded')
                             tmp = []  # resetting gallery image list
                     except Exception:
-                        # print("Not a Gallery")
+                        # Not a Gallery
                         if not downloaded_images.get(item.id):
                             downloaded_images.update({item.id: item.url})
                             post_dict[item.id] = item.url
@@ -71,11 +71,42 @@ def getSavedWallpapers(reddit):
     return post_dict
 
 
+def downloadWallpapers(post_dict):
+    if len(post_dict.keys()) == 0:
+        print("Empty list\nNothing to download\nExiting")
+        quit(-1)
+    images = 0
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askdirectory() + "/"
+    for key in post_dict.keys():
+        link = post_dict.get(key)
+        if type(link) == list:
+            for index, data in enumerate(link):
+                print('downloading ', key, index + 1, '.png')
+                try:
+                    urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                    images += 1
+                except Exception as e:
+                    print("failed to download", key + '.png')
+                    print(e)
+        else:
+            print('downloading ', key + '.png')
+            try:
+                urllib.request.urlretrieve(link, file_path + "{}.png".format(key))
+                images += 1
+            except Exception as e:
+                print("failed to download", key + '.png')
+                print(e)
+    print("Finished")
+    print("downloaded", images, 'images')
+
+
 if __name__ == '__main__':
     folder = 'data'
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    post_dict = getSavedWallpapers()
+    post_dict = getSavedWallpapers(reddit)
 
-
+    downloadWallpapers(post_dict)
