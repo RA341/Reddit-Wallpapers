@@ -1,5 +1,4 @@
 import os
-
 import praw
 import random
 import webbrowser
@@ -69,8 +68,11 @@ def main():
     send_message(client, "Refresh token: {}".format(refresh_token))
 
     print(refresh_token)
-    dumpPickle('refresh_token.pickle', refresh_token)
-    return 0
+    try:
+        dumpPickle('refresh_token.pickle', refresh_token)
+        return 0
+    except:
+        return 1
 
 
 if __name__ == "__main__":
