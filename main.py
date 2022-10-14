@@ -1,4 +1,3 @@
-import os
 import time
 import praw
 from file_functions import dumpPickle, readPickle, dumpSubreddit, readSubreddits, createFolders
@@ -110,9 +109,6 @@ def downloadWallpapers(post_list):
 
 
 if __name__ == '__main__':
-
     createFolders()
-
     posts = getSavedWallpapers(reddit)
-
     downloadWallpapers(posts)
