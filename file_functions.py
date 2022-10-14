@@ -1,25 +1,25 @@
 import pickle
 
 
-def dumpPickle(filename, post_dict):
-    with open('data/' + filename, 'wb') as handle:
+def dumpPickle(filepath, post_dict):
+    with open(filepath, 'wb') as handle:
         pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def readPickle(filename):
-    with open('data/' + filename, 'rb') as handle:
+def readPickle(filepath):
+    with open(filepath, 'rb') as handle:
         return pickle.load(handle)
 
 
-def dumpSubreddit(filename, sub_list):
-    with open('data/' + filename, 'w') as f:
+def dumpSubreddit(filepath, sub_list):
+    with open(filepath, 'w') as f:
         for x in sub_list:
             f.write(x + '\n')
 
 
-def readSubreddits(filename):
+def readSubreddits(filepath):
     tmp = []
-    with open('data/' + filename, 'r') as f:
+    with open(filepath, 'r') as f:
         for x in f.readlines():
             tmp.append(x.strip())
     return tmp
