@@ -131,6 +131,5 @@ dmypy.json
 # personal
 post_dict.pickle
 refresh_token.txt
-test2.py
 data
 test
