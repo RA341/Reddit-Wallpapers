@@ -6,29 +6,36 @@ import tkinter as tk
 from tkinter import filedialog
 import urllib.request
 
-# folder = 'data'
-# if not os.path.exists(folder):
-#     os.makedirs(folder)
+try:
+    token = readPickle('./data/refresh_token.pickle')
+except Exception as e:
+    print("Error getting token")
+    print(e)
+    quit(-1)
 
 reddit = praw.Reddit(
     client_id='63NRVVv_imYBeWE9Dwb-eg',
     client_secret=None,
-    refresh_token=readPickle('refresh_token.pickle'),
+    refresh_token=token,
     user_agent='A app to download wallpapers',
 )
 
 
 def getSavedWallpapers(reddit):
-    subreddits = readSubreddits('../data/subreddits.txt')
-    post_dict = {}
-    downloaded_images = readPickle('../data/downloaded_wallpaper.pickle')
+    print("Initializing please wait....")
+    subreddits_file = './data/subreddits.txt'
+    downloaded_wallpapers = './data/downloaded_wallpaper.pickle'
+
+    subreddits = readSubreddits(subreddits_file)
+    post_list = {}
+    downloaded_images = readPickle(downloaded_wallpapers)
 
     tmp = []
     saved = []
     start = time.perf_counter()
     try:
         saved = list(reddit.user.me().saved(limit=None))
-        print('Successfully received saved posts')
+        print('Successfully captured saved posts')
         print("There are ", len(saved), "saved posts")
     except Exception as e:
         print('failure to get saved posts')
@@ -45,7 +52,7 @@ def getSavedWallpapers(reddit):
                                 tmp.append(item.media_metadata[i]['s']['u'].replace('preview', 'i').split('?')[0])
                             if not downloaded_images.get(item.id):
                                 downloaded_images.update({item.id: tmp})
-                                post_dict[item.id] = tmp
+                                post_list[item.id] = tmp
                                 print("Adding ", item.id)
                             else:
                                 print("Skipping", item.id, 'already downloaded')
@@ -54,7 +61,7 @@ def getSavedWallpapers(reddit):
                         # Not a Gallery
                         if not downloaded_images.get(item.id):
                             downloaded_images.update({item.id: item.url})
-                            post_dict[item.id] = item.url
+                            post_list[item.id] = item.url
                             print("Adding ", item.id)
                         else:
                             print("Skipping", item.id, 'already downloaded')
@@ -64,31 +71,31 @@ def getSavedWallpapers(reddit):
     stop = time.perf_counter()
 
     print("time taken ", stop - start)
-    print("Found", len(post_dict), "new saved posts from matching subreddits")
+    print("Found", len(post_list), "new saved posts from matching subreddits")
     print("Previously downloaded list:\n", downloaded_images)
-    dumpPickle('../data/downloaded_wallpaper.pickle', downloaded_images)
+    dumpPickle(downloaded_wallpapers, downloaded_images)
 
-    return post_dict
+    return post_list
 
 
-def downloadWallpapers(post_dict):
-    if len(post_dict.keys()) == 0:
+def downloadWallpapers(post_list):
+    if len(post_list.keys()) == 0:
         print("Empty list\nNothing to download\nExiting")
         quit(-1)
     images = 0
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askdirectory() + "/"
-    for key in post_dict.keys():
-        link = post_dict.get(key)
+    for key in post_list.keys():
+        link = post_list.get(key)
         if type(link) == list:
             for index, data in enumerate(link):
-                print('downloading ', key, index + 1, '.png')
+                print('downloading', key, str(index + 1) + '.png')
                 try:
                     urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                     images += 1
                 except Exception as e:
-                    print("failed to download", key + '.png')
+                    print("failed to download", key, str(index + 1) + '.png')
                     print(e)
         else:
             print('downloading ', key + '.png')
@@ -103,8 +110,9 @@ def downloadWallpapers(post_dict):
 
 
 if __name__ == '__main__':
+
     createFolders()
 
-    post_dict = getSavedWallpapers(reddit)
+    posts = getSavedWallpapers(reddit)
 
-    downloadWallpapers(post_dict)
+    downloadWallpapers(posts)
