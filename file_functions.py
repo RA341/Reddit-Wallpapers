@@ -4,7 +4,8 @@ def createFolders():
     folder = 'data'
     if not os.path.exists(folder):
         os.makedirs(folder)
-
+    print("Created required folders")
+    
 def dumpPickle(filepath, post_dict):
     with open(filepath, 'wb') as handle:
         pickle.dump(post_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
