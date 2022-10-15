@@ -131,6 +131,5 @@ dmypy.json
 # personal
 post_dict.pickle
 refresh_token.txt
-data/refresh_token.pickle
-data/downloaded_wallpaper.pickle
+lists/
 test
