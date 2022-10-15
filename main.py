@@ -107,7 +107,7 @@ def downloadWallpapers(post_list, downloaded_images):
                 print(e)
     dumpPickle(old_wallpaper_list, downloaded_images)
     end = time.perf_counter()
-    print("Finished in", end - start)
+    print("Finished in", end - start, 's')
     print("Downloaded", success, 'images', 'out of', total)
     print("Failed to download", failed, 'images', 'out of', total)
 
