@@ -8,8 +8,6 @@ def createFiles():
         os.makedirs(data_folder)
         dumpPickle(token_path, '')
         dumpPickle(old_wallpaper_list, {})
-        with open(subreddits_file,'w') as f:
-            f.write('//Add subreddits to download from on each line')
         print("Created required folders")
 
 
