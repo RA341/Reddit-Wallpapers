@@ -2,7 +2,7 @@ import praw
 import random
 import webbrowser
 import socket
-from workers.file_manager import dumpPickle,readPickle
+from workers.file_manager import dumpPickle, readPickle
 from workers.data_paths import token_path
 
 
@@ -44,8 +44,8 @@ def main():
     #         print('LOGIN FAILURE')
     #     else:
     state = str(random.randint(0, 65000))
-    scopes = ['identity', 'history', 'read']
-    url = reddit.auth.url(scopes, state, 'permanent')
+    scopes = ['identity', 'history']
+    url = reddit.auth.url(scopes=scopes,state = state, duration = 'permanent')
     print('We will now open a window in your browser to complete the login process to reddit.')
     webbrowser.open(url)
 
@@ -64,7 +64,7 @@ def main():
         return 1
 
     refresh_token = reddit.auth.authorize(params["code"])
-    send_message(client, "Refresh token: {}".format(refresh_token))
+    send_message(client, "Feel free to close this window\nRefresh token: {}".format(refresh_token))
 
     print(refresh_token)
     try:
@@ -86,7 +86,6 @@ def redditAuthCheck():
             print("Exiting")
             quit(-1)
     return token
-
 
 # if __name__ == "__main__":
 #     folder = 'lists'
