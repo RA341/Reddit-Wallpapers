@@ -1,3 +1,0 @@
-// Add your subreddits on each new line (make sure they are spelled correctly)
-wallpapers
-wallpaper
