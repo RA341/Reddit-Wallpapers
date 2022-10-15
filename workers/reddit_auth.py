@@ -1,12 +1,10 @@
-import os
 import praw
 import random
 import webbrowser
-import sys
 import socket
-from file_functions import dumpPickle
-from data_paths import token_path
-from file_functions import readPickle
+from workers.file_manager import dumpPickle,readPickle
+from workers.data_paths import token_path
+
 
 def receive_connection():
     """
@@ -90,8 +88,8 @@ def redditAuthCheck():
     return token
 
 
-if __name__ == "__main__":
-    folder = 'data'
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    sys.exit(main())
+# if __name__ == "__main__":
+#     folder = 'lists'
+#     if not os.path.exists(folder):
+#         os.makedirs(folder)
+#     sys.exit(main())
