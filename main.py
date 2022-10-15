@@ -20,7 +20,6 @@ def getSavedWallpapers(reddit, downloaded_images):
 
     post_list = {}
 
-
     tmp = []
     saved = []
     start = time.perf_counter()
@@ -63,8 +62,6 @@ def getSavedWallpapers(reddit, downloaded_images):
 
     print("time taken ", stop - start)
     print("Found", len(post_list), "new saved posts from matching subreddits")
-    print("Previously downloaded list:\n", downloaded_images)
-
 
     return post_list
 
@@ -73,8 +70,9 @@ def downloadWallpapers(post_list, downloaded_images):
     if len(post_list.keys()) == 0:
         print("All images are downloaded\nNothing to download\nExiting")
         quit(-1)
-    images = 0
+    success = 0
     failed = 0
+    total = 0
     tmp = []
     root = tk.Tk()
     root.withdraw()
@@ -85,20 +83,22 @@ def downloadWallpapers(post_list, downloaded_images):
         if type(link) == list:
             for index, data in enumerate(link):
                 print('downloading', key, str(index + 1) + '.png')
+                total += 1
                 try:
                     urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                     downloaded_images.update({key: tmp})
-                    images += 1
+                    success += 1
                 except Exception as e:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
                     print(e)
         else:
             print('downloading', key + '.png')
+            total += 1
             try:
                 urllib.request.urlretrieve(link, file_path + "{}.png".format(key))
                 downloaded_images.update({key: link})
-                images += 1
+                success += 1
             except Exception as e:
                 failed += 1
                 print("failed to download", key + '.png')
@@ -106,8 +106,8 @@ def downloadWallpapers(post_list, downloaded_images):
     dumpPickle(old_wallpaper_list, downloaded_images)
     end = time.perf_counter()
     print("Finished in", end - start)
-    print("Downloaded", images, 'images')
-    print("Failed to download", failed, 'images')
+    print("Downloaded", success, 'images', 'out of', total)
+    print("Failed to download", failed, 'images', 'out of', total)
 
 
 if __name__ == '__main__':
@@ -126,5 +126,5 @@ if __name__ == '__main__':
         user_agent='A app to download wallpapers',
     )
     downloaded_images = readPickle(old_wallpaper_list)
-    posts = getSavedWallpapers(reddit,downloaded_images)
-    downloadWallpapers(posts)
+    posts = getSavedWallpapers(reddit, downloaded_images)
+    downloadWallpapers(posts, downloaded_images)
