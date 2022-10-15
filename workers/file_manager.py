@@ -8,6 +8,8 @@ def createFiles():
         os.makedirs(data_folder)
         dumpPickle(token_path, '')
         dumpPickle(old_wallpaper_list, {})
+        f = open('./lists/download_path.txt', 'w')
+        f.write('')
         print("Created required folders")
 
 
