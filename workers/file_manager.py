@@ -1,15 +1,16 @@
 import pickle
 import os
-from data_paths import subreddits_file, token_path, data_folder, downloaded_wallpapers
+from workers.data_paths import subreddits_file, token_path, data_folder, old_wallpaper_list
 
 
 def createFiles():
     if not os.path.exists(data_folder):
         os.makedirs(data_folder)
         dumpPickle(token_path, '')
-        dumpPickle(downloaded_wallpapers, {})
-        dumpSubreddit(subreddits_file, [])
-    print("Created required folders")
+        dumpPickle(old_wallpaper_list, {})
+        with open(subreddits_file,'w') as f:
+            f.write('//Add subreddits to download from on each line')
+        print("Created required folders")
 
 
 def dumpPickle(filepath, post_dict):
