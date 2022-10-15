@@ -1,9 +1,9 @@
 import time
 import praw
-from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles
 import tkinter as tk
 from tkinter import filedialog
 import urllib.request
+from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles
 from workers.data_paths import subreddits_file, old_wallpaper_list
 from workers.reddit_auth import redditAuthCheck
 
@@ -60,7 +60,7 @@ def getSavedWallpapers(reddit, downloaded_images):
 
     stop = time.perf_counter()
 
-    print("time taken ", stop - start)
+    print("time taken ", round(stop - start), 's')
     print("Found", len(post_list), "new saved posts from matching subreddits")
 
     return post_list
@@ -69,14 +69,16 @@ def getSavedWallpapers(reddit, downloaded_images):
 def downloadWallpapers(post_list, downloaded_images):
     if len(post_list.keys()) == 0:
         print("All images are downloaded\nNothing to download\nExiting")
-        quit(-1)
+        quit(2)
     success = 0
     failed = 0
     total = 0
-    print("Please select the folder to download the images")
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askdirectory() + "/"
+    with open('./lists/download_path.txt', 'r') as d:
+        download_path = d.read()
+    if not len(download_path):
+        file_path = filedialog.askdirectory() + "/"
+        open('./lists/download_path.txt', 'w').write(file_path)
+        download_path = file_path
     start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
@@ -86,7 +88,7 @@ def downloadWallpapers(post_list, downloaded_images):
                 print('downloading', key, str(index + 1) + '.png')
                 total += 1
                 try:
-                    urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                    urllib.request.urlretrieve(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                     tmp.append(data)
                     success += 1
                 except Exception as e:
@@ -98,7 +100,7 @@ def downloadWallpapers(post_list, downloaded_images):
             print('downloading', key + '.png')
             total += 1
             try:
-                urllib.request.urlretrieve(link, file_path + "{}.png".format(key))
+                urllib.request.urlretrieve(link, download_path + "{}.png".format(key))
                 downloaded_images.update({key: link})
                 success += 1
             except Exception as e:
@@ -106,8 +108,8 @@ def downloadWallpapers(post_list, downloaded_images):
                 print("failed to download", key + '.png')
                 print(e)
     dumpPickle(old_wallpaper_list, downloaded_images)
-    end = time.perf_counter()
-    print("Finished in", end - start, 's')
+    stop = time.perf_counter()
+    print("Finished in", round(stop - start), 's')
     print("Downloaded", success, 'images', 'out of', total)
     print("Failed to download", failed, 'images', 'out of', total)
 
