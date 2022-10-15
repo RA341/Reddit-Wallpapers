@@ -1,19 +1,25 @@
 import time
 import praw
-from file_functions import dumpPickle, readPickle, readSubreddits, createFiles
+from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles
 import tkinter as tk
 from tkinter import filedialog
 import urllib.request
-from data_paths import subreddits_file, token_path, downloaded_wallpapers
-from reddit_auth import redditAuthCheck
+from workers.data_paths import subreddits_file, old_wallpaper_list
+from workers.reddit_auth import redditAuthCheck
 
 
-def getSavedWallpapers(reddit):
+def getSavedWallpapers(reddit, downloaded_images):
     print("Initializing please wait....")
 
     subreddits = readSubreddits(subreddits_file)
+
+    if len(subreddits) == 0:
+        print("Error no subreddits detected")
+        print("Add your subreddits in", subreddits_file)
+        quit(-1)
+
     post_list = {}
-    downloaded_images = readPickle(downloaded_wallpapers)
+
 
     tmp = []
     saved = []
@@ -38,7 +44,6 @@ def getSavedWallpapers(reddit):
                             for i in list(item.media_metadata):
                                 tmp.append(item.media_metadata[i]['s']['u'].replace('preview', 'i').split('?')[0])
                             if not downloaded_images.get(item.id):
-                                downloaded_images.update({item.id: tmp})
                                 post_list[item.id] = tmp
                                 print("Adding ", item.id)
                             else:
@@ -47,7 +52,6 @@ def getSavedWallpapers(reddit):
                     except Exception:
                         # Not a Gallery
                         if not downloaded_images.get(item.id):
-                            downloaded_images.update({item.id: item.url})
                             post_list[item.id] = item.url
                             print("Adding ", item.id)
                         else:
@@ -60,20 +64,22 @@ def getSavedWallpapers(reddit):
     print("time taken ", stop - start)
     print("Found", len(post_list), "new saved posts from matching subreddits")
     print("Previously downloaded list:\n", downloaded_images)
-    dumpPickle(downloaded_wallpapers, downloaded_images)
+
 
     return post_list
 
 
-def downloadWallpapers(post_list):
+def downloadWallpapers(post_list, downloaded_images):
     if len(post_list.keys()) == 0:
-        print("Empty list\nNothing to download\nExiting")
+        print("All images are downloaded\nNothing to download\nExiting")
         quit(-1)
     images = 0
     failed = 0
+    tmp = []
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askdirectory() + "/"
+    start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
         if type(link) == list:
@@ -81,23 +87,27 @@ def downloadWallpapers(post_list):
                 print('downloading', key, str(index + 1) + '.png')
                 try:
                     urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                    downloaded_images.update({key: tmp})
                     images += 1
                 except Exception as e:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
                     print(e)
         else:
-            print('downloading ', key + '.png')
+            print('downloading', key + '.png')
             try:
                 urllib.request.urlretrieve(link, file_path + "{}.png".format(key))
+                downloaded_images.update({key: link})
                 images += 1
             except Exception as e:
                 failed += 1
                 print("failed to download", key + '.png')
                 print(e)
-    print("Finished")
-    print("downloaded", images, 'images')
-    print("failed to download", failed, 'images')
+    dumpPickle(old_wallpaper_list, downloaded_images)
+    end = time.perf_counter()
+    print("Finished in", end - start)
+    print("Downloaded", images, 'images')
+    print("Failed to download", failed, 'images')
 
 
 if __name__ == '__main__':
@@ -108,12 +118,13 @@ if __name__ == '__main__':
         print("Error getting token")
         print(e)
         quit(-1)
-    print("token", token)
+
     reddit = praw.Reddit(
         client_id='63NRVVv_imYBeWE9Dwb-eg',
         client_secret=None,
         refresh_token=token,
         user_agent='A app to download wallpapers',
     )
-    posts = getSavedWallpapers(reddit)
+    downloaded_images = readPickle(old_wallpaper_list)
+    posts = getSavedWallpapers(reddit,downloaded_images)
     downloadWallpapers(posts)
