@@ -1,3 +1,4 @@
+import os
 import time
 import praw
 import tkinter as tk
@@ -79,6 +80,10 @@ def downloadWallpapers(post_list, downloaded_images):
         file_path = filedialog.askdirectory() + "/"
         open('./lists/download_path.txt', 'w').write(file_path)
         download_path = file_path
+    else:
+        print("Found previous download path")
+        print(download_path)
+        print("You can change it at" , os.path.abspath('./lists/download_path.txt'))
     start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
