@@ -73,7 +73,7 @@ def downloadWallpapers(post_list, downloaded_images):
     success = 0
     failed = 0
     total = 0
-    tmp = []
+    print("Please select the folder to download the images")
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askdirectory() + "/"
@@ -81,17 +81,19 @@ def downloadWallpapers(post_list, downloaded_images):
     for key in post_list.keys():
         link = post_list.get(key)
         if type(link) == list:
+            tmp = []
             for index, data in enumerate(link):
                 print('downloading', key, str(index + 1) + '.png')
                 total += 1
                 try:
                     urllib.request.urlretrieve(data, file_path + '{}_'.format(key) + '{}.png'.format(index + 1))
-                    downloaded_images.update({key: tmp})
+                    tmp.append(data)
                     success += 1
                 except Exception as e:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
                     print(e)
+            downloaded_images.update({key: tmp})
         else:
             print('downloading', key + '.png')
             total += 1
