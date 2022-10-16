@@ -1,6 +1,6 @@
 import pickle
 import os
-from workers.data_paths import subreddits_file, token_path, data_folder, old_wallpaper_list
+from workers.data_paths import token_path, data_folder, old_wallpaper_list
 
 
 def createFiles():
