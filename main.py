@@ -1,7 +1,6 @@
 import os
 import time
 import praw
-import tkinter as tk
 from tkinter import filedialog
 import urllib.request
 from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles
@@ -26,9 +25,8 @@ def getSavedWallpapers(reddit, downloaded_images):
     start = time.perf_counter()
     try:
         saved = list(reddit.user.me().saved(limit=None))
-        print('Successfully captured saved posts')
+        print('Successfully received saved posts')
         print("There are ", len(saved), "saved posts")
-
     except Exception as e:
         print('failure to get saved posts')
         print(e)
