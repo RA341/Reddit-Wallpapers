@@ -9,14 +9,6 @@ from workers.file_manager import dumpPickle, readPickle, readSubreddits, createF
 from workers.reddit_auth import redditAuthCheck
 
 
-def donwloadImage(url: str, filepath: str) -> requests.models.Response:
-    r = requests.get(url)
-    with open(filepath, 'wb') as f:
-        f.write(r.content)
-    f.close()
-    return r
-
-
 def getSavedImages(reddit, downloaded_images):
     print("Initializing please wait....")
 
@@ -76,7 +68,15 @@ def getSavedImages(reddit, downloaded_images):
     return post_list
 
 
-def downloadImages(post_list, downloaded_images):
+def downloadImage(url: str, filepath: str) -> requests.models.Response:
+    r = requests.get(url)
+    with open(filepath, 'wb') as f:
+        f.write(r.content)
+    f.close()
+    return r
+
+
+def imageDownloader(post_list, downloaded_images):
     if len(post_list.keys()) == 0:
         print("All images are downloaded\nNothing to download\nExiting")
         quit(2)
@@ -101,7 +101,7 @@ def downloadImages(post_list, downloaded_images):
             for index, data in enumerate(link):
                 print('downloading', key, str(index + 1) + '.png')
                 total += 1
-                response = donwloadImage(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                response = downloadImage(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                 if response.ok:
                     tmp.append(data)
                     success += 1
@@ -113,7 +113,7 @@ def downloadImages(post_list, downloaded_images):
         else:
             print('downloading', key + '.png')
             total += 1
-            response = donwloadImage(link, download_path + "{}.png".format(key))
+            response = downloadImage(link, download_path + "{}.png".format(key))
             if response.ok:
                 downloaded_images.update({key: link})
                 success += 1
@@ -146,4 +146,4 @@ if __name__ == '__main__':
     )
     downloaded_images = readPickle(old_wallpaper_list)
     posts = getSavedImages(reddit, downloaded_images)
-    downloadImages(posts, downloaded_images)
+    imageDownloader(posts, downloaded_images)
