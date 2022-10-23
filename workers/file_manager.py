@@ -1,7 +1,12 @@
 import pickle
 import os
-from workers.data_paths import token_path, data_folder, old_wallpaper_list
 
+# Worker folder paths
+# WARNING DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING
+data_folder = './lists'
+subreddits_file = './subreddits.txt'
+old_wallpaper_list = './' + data_folder[2:] + '/downloaded_wallpaper.pickle'
+token_path = './' + data_folder[2:] + '/refresh_token.pickle'
 
 def createFiles():
     if not os.path.exists(data_folder):
