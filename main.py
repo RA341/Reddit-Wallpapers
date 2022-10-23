@@ -48,7 +48,12 @@ def getSavedImages(reddit, downloaded_images):
                                 post_list[item.id] = tmp
                                 print("Adding ", item.id)
                             else:
-                                print("Skipping", item.id, 'already downloaded')
+                                if post_list[item.id] == tmp:
+                                    print("Skipping", item.id, 'already downloaded')
+                                else:
+                                    diff = set(tmp) - set(post_list[item.id])
+                                    post_list[item.id] = list(diff)
+                                    print("Adding ", item.id)
                             tmp = []  # resetting gallery image list
                     except Exception:
                         # Not a Gallery
@@ -83,14 +88,16 @@ def imageDownloader(post_list, downloaded_images):
     success = 0
     failed = 0
     total = 0
+
     with open('./lists/download_path.txt', 'r') as d:
         download_path = d.read()
     if not len(download_path):
+        print("\nPlease select download folder in the dialog\n")
         file_path = filedialog.askdirectory() + "/"
         open('./lists/download_path.txt', 'w').write(file_path)
         download_path = file_path
     else:
-        print("\nFound previous download path")
+        print("\nFound previous download path\n")
         print(download_path)
         print("You can change it at", os.path.abspath('./lists/download_path.txt'), '\n')
     start = time.perf_counter()
@@ -105,11 +112,19 @@ def imageDownloader(post_list, downloaded_images):
                 if response.ok:
                     tmp.append(data)
                     success += 1
+                    print('downloaded', key, str(index + 1) + '.png', 'time taken:' + str(response.elapsed))
                 else:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
                     print("Response", response.status_code + ":" + response.reason)
-            downloaded_images.update({key: tmp})
+
+            t = downloaded_images.get(key)
+            if not t:
+                downloaded_images.update({key: tmp})
+            else:
+                downloaded_images[key] = t.extend(tmp)
+
+
         else:
             print('downloading', key + '.png')
             total += 1
@@ -117,6 +132,7 @@ def imageDownloader(post_list, downloaded_images):
             if response.ok:
                 downloaded_images.update({key: link})
                 success += 1
+                print('downloaded', key + '.png', 'time taken:' + str(response.elapsed))
             else:
                 failed += 1
                 print("failed to download", key + '.png')
@@ -126,7 +142,8 @@ def imageDownloader(post_list, downloaded_images):
     stop = time.perf_counter()
     print("\nFinished in", round(stop - start), 's')
     print("Downloaded", success, 'images', 'out of', total)
-    print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
+    if failed:
+        print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
 
 
 if __name__ == '__main__':
