@@ -2,9 +2,18 @@ import os
 import time
 import praw
 from tkinter import filedialog
-import urllib.request
-from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, old_wallpaper_list
+import requests
+from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
+    old_wallpaper_list
 from workers.reddit_auth import redditAuthCheck
+
+
+def donwloadImage(url: str, filepath: str) -> requests.models.Response:
+    r = requests.get(url)
+    with open(filepath, 'wb') as f:
+        f.write(r.content)
+    f.close()
+    return r
 
 
 def getSavedWallpapers(reddit, downloaded_images):
@@ -22,12 +31,14 @@ def getSavedWallpapers(reddit, downloaded_images):
     tmp = []
     saved = []
     start = time.perf_counter()
+
+    print("Getting saved posts")
     try:
         saved = list(reddit.user.me().saved(limit=None))
         print('Successfully received saved posts')
-        print("There are ", len(saved), "saved posts")
+        print("There are ", len(saved), "saved posts\n")
     except Exception as e:
-        print('failure to get saved posts')
+        print('failure to get saved posts\n')
         print(e)
         quit(-1)
 
@@ -58,8 +69,8 @@ def getSavedWallpapers(reddit, downloaded_images):
 
     stop = time.perf_counter()
 
-    print("time taken ", round(stop - start), 's')
-    print("Found", len(post_list), "new saved posts from matching subreddits")
+    print("\nFound", len(post_list), "new saved posts from matching subreddits")
+    print("time taken ", round(stop - start), 's\n')
 
     return post_list
 
@@ -78,9 +89,9 @@ def downloadWallpapers(post_list, downloaded_images):
         open('./lists/download_path.txt', 'w').write(file_path)
         download_path = file_path
     else:
-        print("Found previous download path")
+        print("\nFound previous download path")
         print(download_path)
-        print("You can change it at" , os.path.abspath('./lists/download_path.txt'))
+        print("You can change it at", os.path.abspath('./lists/download_path.txt'), '\n')
     start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
@@ -89,31 +100,32 @@ def downloadWallpapers(post_list, downloaded_images):
             for index, data in enumerate(link):
                 print('downloading', key, str(index + 1) + '.png')
                 total += 1
-                try:
-                    urllib.request.urlretrieve(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                response = donwloadImage(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                if response.ok:
                     tmp.append(data)
                     success += 1
-                except Exception as e:
+                else:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
-                    print(e)
+                    print("Response", response.status_code + ":" + response.reason)
             downloaded_images.update({key: tmp})
         else:
             print('downloading', key + '.png')
             total += 1
-            try:
-                urllib.request.urlretrieve(link, download_path + "{}.png".format(key))
+            response = donwloadImage(link, download_path + "{}.png".format(key))
+            if response.ok:
                 downloaded_images.update({key: link})
                 success += 1
-            except Exception as e:
+            else:
                 failed += 1
                 print("failed to download", key + '.png')
                 print(e)
+
     dumpPickle(old_wallpaper_list, downloaded_images)
     stop = time.perf_counter()
-    print("Finished in", round(stop - start), 's')
+    print("\nFinished in", round(stop - start), 's')
     print("Downloaded", success, 'images', 'out of', total)
-    print("Failed to download", failed, 'images', 'out of', total)
+    print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
 
 
 if __name__ == '__main__':
