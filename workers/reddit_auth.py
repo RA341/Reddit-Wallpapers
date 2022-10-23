@@ -44,7 +44,7 @@ def main():
     #     else:
     state = str(random.randint(0, 65000))
     scopes = ['identity', 'history']
-    url = reddit.auth.url(scopes=scopes,state = state, duration = 'permanent')
+    url = reddit.auth.url(scopes=scopes, state=state, duration='permanent')
     print('We will now open a window in your browser to complete the login process to reddit.')
     webbrowser.open(url)
 
@@ -65,7 +65,7 @@ def main():
     refresh_token = reddit.auth.authorize(params["code"])
     send_message(client, "Feel free to close this window\nRefresh token: {}".format(refresh_token))
 
-    print(refresh_token)
+    # print(refresh_token)
     try:
         dumpPickle(token_path, refresh_token)
         return 0
