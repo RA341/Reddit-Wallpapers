@@ -3,6 +3,7 @@ import time
 import praw
 from tkinter import filedialog
 import requests
+
 from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
     old_wallpaper_list
 from workers.reddit_auth import redditAuthCheck
@@ -16,7 +17,7 @@ def donwloadImage(url: str, filepath: str) -> requests.models.Response:
     return r
 
 
-def getSavedWallpapers(reddit, downloaded_images):
+def getSavedImages(reddit, downloaded_images):
     print("Initializing please wait....")
 
     subreddits = readSubreddits(subreddits_file)
@@ -75,7 +76,7 @@ def getSavedWallpapers(reddit, downloaded_images):
     return post_list
 
 
-def downloadWallpapers(post_list, downloaded_images):
+def downloadImages(post_list, downloaded_images):
     if len(post_list.keys()) == 0:
         print("All images are downloaded\nNothing to download\nExiting")
         quit(2)
@@ -144,5 +145,5 @@ if __name__ == '__main__':
         user_agent='A app to download wallpapers',
     )
     downloaded_images = readPickle(old_wallpaper_list)
-    posts = getSavedWallpapers(reddit, downloaded_images)
-    downloadWallpapers(posts, downloaded_images)
+    posts = getSavedImages(reddit, downloaded_images)
+    downloadImages(posts, downloaded_images)
