@@ -2,8 +2,7 @@ import praw
 import random
 import webbrowser
 import socket
-from workers.file_manager import dumpPickle, readPickle
-from workers.data_paths import token_path
+from workers.file_manager import dumpPickle, readPickle, token_path
 
 
 def receive_connection():

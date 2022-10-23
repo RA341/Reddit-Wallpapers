@@ -3,8 +3,7 @@ import time
 import praw
 from tkinter import filedialog
 import urllib.request
-from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles
-from workers.data_paths import subreddits_file, old_wallpaper_list
+from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, old_wallpaper_list
 from workers.reddit_auth import redditAuthCheck
 
 
