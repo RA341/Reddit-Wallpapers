@@ -132,4 +132,4 @@ dmypy.json
 post_dict.pickle
 refresh_token.txt
 lists/
-test
+test/
