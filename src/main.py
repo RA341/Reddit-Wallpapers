@@ -4,9 +4,9 @@ import praw
 from tkinter import filedialog
 import requests
 
-from workers.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
+from utils.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
     old_wallpaper_list
-from workers.reddit_auth import redditAuthCheck
+from utils.reddit_auth import redditAuthCheck
 
 
 def getSavedImages(reddit, downloaded_images):
