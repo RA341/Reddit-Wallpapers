@@ -2,7 +2,7 @@ import praw
 import random
 import webbrowser
 import socket
-from workers.file_manager import dumpPickle, readPickle, token_path
+from src.workers.file_manager import dumpPickle, readPickle, token_path
 
 
 def receive_connection():
@@ -31,7 +31,7 @@ def main():
     reddit = praw.Reddit(
         client_id='63NRVVv_imYBeWE9Dwb-eg',
         client_secret=None,
-        user_agent='A app to download wallpapers',
+        user_agent='A src to download wallpapers',
         redirect_uri='http://localhost:8080',
     )
 

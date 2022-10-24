@@ -89,17 +89,17 @@ def imageDownloader(post_list, downloaded_images):
     failed = 0
     total = 0
 
-    with open('./lists/download_path.txt', 'r') as d:
+    with open('lists/download_path.txt', 'r') as d:
         download_path = d.read()
     if not len(download_path):
         print("\nPlease select download folder in the dialog\n")
         file_path = filedialog.askdirectory() + "/"
-        open('./lists/download_path.txt', 'w').write(file_path)
+        open('lists/download_path.txt', 'w').write(file_path)
         download_path = file_path
     else:
         print("\nFound previous download path\n")
         print(download_path)
-        print("You can change it at", os.path.abspath('./lists/download_path.txt'), '\n')
+        print("You can change it at", os.path.abspath('lists/download_path.txt'), '\n')
     start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
@@ -159,7 +159,7 @@ if __name__ == '__main__':
         client_id='63NRVVv_imYBeWE9Dwb-eg',
         client_secret=None,
         refresh_token=token,
-        user_agent='A app to download wallpapers',
+        user_agent='A src to download wallpapers',
     )
     downloaded_images = readPickle(old_wallpaper_list)
     posts = getSavedImages(reddit, downloaded_images)
