@@ -2,7 +2,7 @@ import praw
 import random
 import webbrowser
 import socket
-from file_manager import dumpPickle, readPickle, token_path
+from utils.file_manager import dumpPickle, readPickle, token_path
 
 
 def receive_connection():

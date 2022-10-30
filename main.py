@@ -5,7 +5,7 @@ from tkinter import filedialog
 import requests
 
 from utils.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
-    old_wallpaper_list
+    old_wallpaper_list, data_folder
 from utils.reddit_auth import redditAuthCheck
 
 
@@ -89,17 +89,17 @@ def imageDownloader(post_list, downloaded_images):
     failed = 0
     total = 0
 
-    with open('lists/download_path.txt', 'r') as d:
+    with open( data_folder+'/download_path.txt', 'r') as d:
         download_path = d.read()
     if not len(download_path):
         print("\nPlease select download folder in the dialog\n")
         file_path = filedialog.askdirectory() + "/"
-        open('lists/download_path.txt', 'w').write(file_path)
+        open(data_folder + '/download_path.txt', 'w').write(file_path)
         download_path = file_path
     else:
-        print("\nFound previous download path\n")
+        print("Found previous download path\n")
         print(download_path)
-        print("You can change it at", os.path.abspath('lists/download_path.txt'), '\n')
+        print("You can change it at", os.path.abspath(data_folder + '/download_path.txt'), '\n')
     start = time.perf_counter()
     for key in post_list.keys():
         link = post_list.get(key)
@@ -112,7 +112,7 @@ def imageDownloader(post_list, downloaded_images):
                 if response.ok:
                     tmp.append(data)
                     success += 1
-                    print('downloaded', key, str(index + 1) + '.png', 'time taken:' + str(response.elapsed))
+                #     print('downloaded', key, str(index + 1) + '.png')
                 else:
                     failed += 1
                     print("failed to download", key, str(index + 1) + '.png')
@@ -123,8 +123,6 @@ def imageDownloader(post_list, downloaded_images):
                 downloaded_images.update({key: tmp})
             else:
                 downloaded_images[key] = t.extend(tmp)
-
-
         else:
             print('downloading', key + '.png')
             total += 1
@@ -132,11 +130,12 @@ def imageDownloader(post_list, downloaded_images):
             if response.ok:
                 downloaded_images.update({key: link})
                 success += 1
-                print('downloaded', key + '.png', 'time taken:' + str(response.elapsed))
+                # print('downloaded', key + '.png')
             else:
                 failed += 1
                 print("failed to download", key + '.png')
                 print(e)
+        time.sleep(0.5)
 
     dumpPickle(old_wallpaper_list, downloaded_images)
     stop = time.perf_counter()
