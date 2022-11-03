@@ -1,4 +1,7 @@
 # reddit-image-downloader
+Project is still under development
+
+# reddit-image-downloader
 Program to download images from reddit using saved posts 
 
 # Pre-Installation
@@ -7,7 +10,7 @@ Program to download images from reddit using saved posts
 
 
 # Installation
-Download - [install.ps1](https://downgit.github.io/#/home?url=https://github.com/RA341/Apex-softhack/blob/main/powershell/install.ps1)
+Download - 
 
 # Usage
 
