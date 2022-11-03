@@ -16,7 +16,7 @@ Function Get-Folder($initialDirectory=""){
 }
 
 
-$version = if($p -is [System.Management.Automation.ErrorRecord]){
+if($p -is [System.Management.Automation.ErrorRecord]){
     Write-Host "python not installed exiting"
     Exit-PSHostProcess
 } else {
@@ -39,7 +39,7 @@ $version = if($p -is [System.Management.Automation.ErrorRecord]){
     $file_man_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/modules/file_manager.py'
     $red_auth_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/modules/reddit_auth.py'
 
-    $pythonpath = python -c "import sys; print(sys.executable)"
+    python -c "import sys; print(sys.executable)"
 
     if (Test-Path $dir) {
         # Perform Delete file from folder operation
