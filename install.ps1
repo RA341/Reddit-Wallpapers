@@ -28,16 +28,16 @@ $version = if($p -is [System.Management.Automation.ErrorRecord]){
     $script_path = $dir + "main.py"
     $req_path = $dir + "req.txt"
     $subreddit_path = $dir + "subreddits.txt"
-    $util_dir = $dir + "utils\"
+    $util_dir = $dir + "modules\"
     $file_man = $util_dir + "file_manager.py"
     $red_auth = $util_dir + "reddit_auth.py"
 
     # links for all files
-    $script_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/src/main.py'
-    $subreddit_uri = "https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/src/subreddits.txt"
+    $script_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/main.py'
+    $subreddit_uri = "https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/subreddits.txt"
     $req_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/requirments.txt'
-    $file_man_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/src/utils/file_manager.py'
-    $red_auth_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/src/utils/reddit_auth.py'
+    $file_man_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/modules/file_manager.py'
+    $red_auth_uri = 'https://raw.githubusercontent.com/RA341/py-wallpaper-downloader/main/modules/reddit_auth.py'
 
     $pythonpath = python -c "import sys; print(sys.executable)"
 
@@ -56,23 +56,18 @@ $version = if($p -is [System.Management.Automation.ErrorRecord]){
 
     Write-Host "Downloading main Script"
     Invoke-WebRequest -URI $script_uri -OutFile $script_path
-    Write-Host "Downloaded main Script"
 
     Write-Host "Downloading Requirments file"
     Invoke-WebRequest -URI $req_uri -OutFile $req_path
-    Write-Host "Downloaded Requirments file"
 
     Write-Host "Downloading subreddit file"
     Invoke-WebRequest -URI $subreddit_uri -OutFile $subreddit_path
-    Write-Host "Downloaded subreddit file"
 
     Write-Host "Downloading file manager.py"
     Invoke-WebRequest -URI $file_man_uri -OutFile $file_man
-    Write-Host "Downloaded file manager.py"
 
     Write-Host "Downloading reddit auth script"
     Invoke-WebRequest -URI $red_auth_uri -OutFile $red_auth
-    Write-Host "Downloaded reddit auth script"
 
     Write-Host "All Files Sucessfully downloaded"
 
@@ -85,7 +80,7 @@ $version = if($p -is [System.Management.Automation.ErrorRecord]){
 
     Write-Host "Creating settings file"
     Set-Location $dir
-    python -c "import sys; from utils.file_manager import createFiles ; createFiles()"
+    python -c "import sys; from modules.file_manager import createFiles ; createFiles()"
 
     Write-Host "Cleaning up"
     Remove-Item $req_path
