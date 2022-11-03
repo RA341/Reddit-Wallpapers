@@ -33,7 +33,7 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
+# Install logs
 pip-log.txt
 pip-delete-this-directory.txt
 
@@ -133,3 +133,4 @@ post_dict.pickle
 refresh_token.txt
 lists/
 test/
+Install/install test
