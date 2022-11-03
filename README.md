@@ -6,7 +6,7 @@ Program to download images from reddit using saved posts
 
 # Pre-Installation
 * Windows 10 
-* [Python installation](https://www.tutorialspoint.com/how-to-install-python-in-windows), [added to windows path]([https://datatofish.com/add-python-to-windows-path/])
+* [Python installation](https://www.tutorialspoint.com/how-to-install-python-in-windows), [added to windows path](https://datatofish.com/add-python-to-windows-path/)
 
 
 # Installation
