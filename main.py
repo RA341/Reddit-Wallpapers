@@ -14,7 +14,7 @@ def getSavedImages(reddit, downloaded_images):
 
     subreddits = readSubreddits(subreddits_file)
 
-    if len(subreddits) == 0:
+    if not len(subreddits):
         print("Error no subreddits detected")
         print("Add your subreddits in", subreddits_file)
         quit(-1)
@@ -82,7 +82,7 @@ def downloadImage(url: str, filepath: str) -> requests.models.Response:
 
 
 def imageDownloader(post_list, downloaded_images):
-    if len(post_list.keys()) == 0:
+    if not len(post_list.keys()):
         print("All images are downloaded\nNothing to download\nExiting")
         quit(2)
     success = 0
