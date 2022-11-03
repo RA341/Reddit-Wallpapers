@@ -10,7 +10,9 @@ Program to download images from reddit using saved posts
 
 
 # Installation
-Download - 
+* Download - [install.ps1](https://downgit.github.io/#/home?url=https://github.com/RA341/reddit-image-downloader/blob/main/Install/install.ps1)
+* run script with powershell
+
 
 # Usage
 
