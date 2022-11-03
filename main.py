@@ -89,7 +89,7 @@ def imageDownloader(post_list, downloaded_images):
     failed = 0
     total = 0
 
-    with open( data_folder+'/download_path.txt', 'r') as d:
+    with open(data_folder+'/download_path.txt', 'r') as d:
         download_path = d.read()
     if not len(download_path):
         print("\nPlease select download folder in the dialog\n")
