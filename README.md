@@ -10,10 +10,13 @@ Program to download images from reddit using saved posts
 
 
 # Installation
-* Download - [install.ps1](https://downgit.github.io/#/home?url=https://github.com/RA341/reddit-image-downloader/blob/main/Install/install.ps1)
+* Download - [install.ps1](https://github.com/RA341/reddit-image-downloader/releases/download/v1.0.0/install.ps1)
 * run script with powershell
 
 
 # Usage
+In your preferences folder add your preferred subreddits in ```subreddit.txt```.
 
-In your preferences folder add your preferred subreddits in ```subreddit.txt```
+run script using ```python (path to file)main.py```.
+
+Optionally-you can add main.py to a task schedule that will run automatically.
