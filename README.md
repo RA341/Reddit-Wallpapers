@@ -1,4 +1,4 @@
-# reddit-image-downloader
+# Notice
 Project is still under development
 
 # reddit-image-downloader
