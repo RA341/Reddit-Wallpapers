@@ -1,5 +1,5 @@
 # Why
-I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and [r/wallpapers](https://www.reddit.com/r/wallpapers/), so I created this script to automate downloading process.
+I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and [r/wallpapers](https://www.reddit.com/r/wallpapers/), so I created this script to automate the whole process.
 
 * Save the post on reddit.
 * Run the script.
