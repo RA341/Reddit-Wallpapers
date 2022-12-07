@@ -3,6 +3,8 @@ I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallp
 
 * Save the post on reddit.
 * Run the script.
+* PROFIT !!
+* The script will automatically download the images to a folder of your choice.
 
 # Pre-Requisite
 * Windows 10
