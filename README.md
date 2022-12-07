@@ -1,9 +1,11 @@
-# reddit-image-downloader
-I love wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and r/wallpapers
-Program to download images from reddit using saved posts.
+# Why
+I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and [r/wallpapers](https://www.reddit.com/r/wallpapers/), so I created this script to automate downloading process.
 
-# Pre-Installation
-* Windows 10 
+* Save the post on reddit.
+* Run the script.
+
+# Pre-Requisite
+* Windows 10
 * [Python installation](https://www.tutorialspoint.com/how-to-install-python-in-windows), [added to windows path](https://datatofish.com/add-python-to-windows-path/)
 
 
@@ -24,5 +26,4 @@ In your preferences folder add your preferred subreddits in ```subreddit.txt```.
 run script using ```python (path to file)/main.py```.
 
 Optionally-you can add main.py to a task schedule that will run automatically.
-
 
