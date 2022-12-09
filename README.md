@@ -17,7 +17,7 @@ I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallp
 
 or (if you don't want to install the powershell script)
 
-* Download - ```main.py``` and ```modules``` directory
+* Download - ```main.py```, ```subredits.txt``` and ```modules``` directory
 * run ```main.py``` with python
 
 
