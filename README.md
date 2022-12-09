@@ -15,6 +15,11 @@ I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallp
 * Download - [install.ps1](https://github.com/RA341/reddit-image-downloader/releases/download/v1.0.0/install.ps1)
 * run script with powershell
 
+or (if you don't want to install the powershell script)
+
+* Download - ```main.py``` and ```modules``` directory
+* run ```main.py``` with python
+
 
 # Usage
 
