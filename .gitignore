@@ -132,3 +132,4 @@ dmypy.json
 preferences/
 test/
 Install/install test
+./secret.ini
