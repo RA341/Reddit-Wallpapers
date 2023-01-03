@@ -133,3 +133,4 @@ preferences/
 test/
 Install/install test
 /secret.ini
+/wall-py/
