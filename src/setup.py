@@ -5,52 +5,60 @@ import os
 from src.reddit_auth import reddit_login
 
 
-def create_files(root_path, config_path, wallpaper_list_path):
-    # create root directory if not exists
-    if not os.path.exists(root_path):
-        os.makedirs(root_path)
-    # create config.json and load empty data
-    if not os.path.exists(config_path):
-        data = {
-            'client_id': None,
-            'client_secret': None,
-            'refresh_token': None,
-            'subreddit_list': ['wallpaper', 'wallpapers'],
-            'download_path': None
-        }
-        with open(config_path, 'w') as outfile:
-            json.dump(data, outfile)
+class Setup:
+    root_path = ''
+    config_path = ''
+    image_history_path = ''
 
-    if not os.path.exists(wallpaper_list_path):
-        data = {}  # input an empty list
-        with open(wallpaper_list_path, 'w') as outfile:
-            json.dump(data, outfile)
+    def __init__(self, root_path, config_path, image_history_path):
+        self.root_path = root_path
+        self.config_path = config_path
+        self.image_history_path = image_history_path
 
-    print("Created required folders")
+        self.create_files()
 
+        self.file_obj = open(self.config_path, 'r+')  # open the config.json
+        self.settings = json.load(self.file_obj)  # load the JSON data from the file
+        self.authenticate()
 
-def load_clientid():
-    # Read the credentials from the INI file
-    conf = configparser.ConfigParser()
-    conf.read('secret.ini')
-    return [conf['reddit']['client_id'], conf['reddit']['client_secret']]
+    def create_files(self):
+        # create root directory if not exists
+        if not os.path.exists(self.root_path):
+            os.makedirs(self.root_path)
+        # create config.json and load empty data
+        if not os.path.exists(self.config_path):
+            data = {
+                'client_id': None,
+                'client_secret': None,
+                'refresh_token': None,
+                'subreddit_list': ['wallpaper', 'wallpapers'],
+                'download_path': None
+            }
+            with open(self.config_path, 'w') as outfile:
+                json.dump(data, outfile)
 
+        if not os.path.exists(self.image_history_path):
+            data = {}  # input an empty list
+            with open(self.image_history_path, 'w') as outfile:
+                json.dump(data, outfile)
 
-def authenticate(config_path):
-    with open(config_path, 'r+') as con:
-        settings = json.load(con)
-        if len(settings['refresh_token']) == 0:
+        print("Created required folders")
+
+    def authenticate(self):
+        if self.settings['refresh_token'] is None:
             print("No token detected")
-            tmp = reddit_login(load_clientid())  # authorise using reddit_auth.py
-            if tmp != 1:  # check if function returns 0 or token
-                settings['refresh_token'] = tmp  # assign the token
-                json.dump(settings, con)  # write to file
+
+            # enter the client details
+            self.settings['client_id'] = input('Enter client id \nfound on https://www.reddit.com/prefs/apps\n:')
+            self.settings['client_secret'] = input('Enter client secret \nfound on https://www.reddit.com/prefs/apps\n:')
+
+            tmp = reddit_login(self.settings['client_id'],
+                               self.settings['client_secret'])  # authorise using reddit_auth.py
+            if tmp != 1:  # check if function returns 1(error) or token
+                self.settings['refresh_token'] = tmp  # assign the token
+                json.dump(self.settings, self.file_obj)  # write to file
+                self.file_obj.close()
             else:
                 print("Could not get reddit login token")
                 print("Exiting")
                 quit(-1)
-
-
-def run_setup():
-    create_files()
-    authenticate()

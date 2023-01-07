@@ -26,10 +26,10 @@ def send_message(client, message):
     client.close()
 
 
-def reddit_login(client_credentials):  # client_credentials = [client_id,client_secret]
+def reddit_login(client_id ,client_secret):  # client_credentials = [client_id,client_secret]
     reddit = praw.Reddit(
-        client_id=client_credentials[0],  # read the client_id
-        client_secret=client_credentials[0],  # read the client_secret
+        client_id=client_id,  # read the client_id
+        client_secret=client_secret,  # read the client_secret
         user_agent='lets download some wallpapers',
         redirect_uri='http://localhost:8080',
     )
@@ -55,5 +55,5 @@ def reddit_login(client_credentials):  # client_credentials = [client_id,client_
         return 1
 
     refresh_token = reddit.auth.authorize(params["code"])
-    send_message(client, "Feel free to close this window\nRefresh token: {}".format(refresh_token))
+    send_message(client, "Feel free to close this window")
     return refresh_token
