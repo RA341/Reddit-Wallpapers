@@ -2,7 +2,6 @@ import praw
 import random
 import webbrowser
 import socket
-from modules.file_manager import dumpPickle, readPickle, token_path
 
 
 def receive_connection():
@@ -27,21 +26,14 @@ def send_message(client, message):
     client.close()
 
 
-def main():
+def reddit_login(client_id, client_secret):  # client_credentials = [client_id,client_secret]
     reddit = praw.Reddit(
-        client_id='63NRVVv_imYBeWE9Dwb-eg',
-        client_secret=None,
-        user_agent='A src to download wallpapers',
+        client_id=client_id,  # read the client_id
+        client_secret=client_secret,  # read the client_secret
+        user_agent='lets download some wallpapers',
         redirect_uri='http://localhost:8080',
     )
 
-    # try:
-    #     p = reddit.user.me()
-    #     print(p)
-    # except Exception as err:
-    #     if str(err) != 'invalid_grant error processing request':
-    #         print('LOGIN FAILURE')
-    #     else:
     state = str(random.randint(0, 65000))
     scopes = ['identity', 'history']
     url = reddit.auth.url(scopes=scopes, state=state, duration='permanent')
@@ -63,31 +55,5 @@ def main():
         return 1
 
     refresh_token = reddit.auth.authorize(params["code"])
-    send_message(client, "Feel free to close this window\nRefresh token: {}".format(refresh_token))
-
-    # print(refresh_token)
-    try:
-        dumpPickle(token_path, refresh_token)
-        return 0
-    except:
-        return 1
-
-
-def redditAuthCheck():
-    token = readPickle(token_path)
-    if len(token) == 0:
-        print("No token detected")
-        # authorise using reddit_auth.py
-        if not main():
-            return readPickle(token_path)
-        else:
-            print("Could not get reddit login token")
-            print("Exiting")
-            quit(-1)
-    return token
-
-# if __name__ == "__main__":
-#     folder = 'lists'
-#     if not os.path.exists(folder):
-#         os.makedirs(folder)
-#     sys.exit(main())
+    send_message(client, "Feel free to close this window")
+    return refresh_token

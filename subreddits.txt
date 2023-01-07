@@ -1,3 +1,0 @@
-//Add subreddits to download from on each line
-wallpaper
-wallpapers
