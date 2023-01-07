@@ -1,22 +1,25 @@
-import os
-import time
+import json
 import praw
-from tkinter import filedialog
-import requests
 
-from modules.file_manager import dumpPickle, readPickle, readSubreddits, createFiles, subreddits_file, \
-    old_wallpaper_list, data_folder
-from modules.reddit_auth import redditAuthCheck
+from reddit_main import *
+from setup import run_setup, load_clientid
+
+# folder paths :
+# WARNING DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING
+root = './wall-py'
+config = root + '/config.json'
+wallpaper_list = root + '/download_history.json'
 
 
-def getSavedImages(reddit, downloaded_images):
+def get_saved_images(reddit, downloaded_images, config):
     print("Initializing please wait....")
 
-    subreddits = readSubreddits(subreddits_file)
+    subreddits = config['subreddit_list']
 
     if not len(subreddits):
-        print("Error no subreddits detected")
+        print("Warning!!, no subreddits found")
         print("Add your subreddits in", subreddits_file)
+        print('Then run the script again')
         quit(-1)
 
     post_list = {}
@@ -55,8 +58,8 @@ def getSavedImages(reddit, downloaded_images):
                                     post_list[item.id] = list(diff)
                                     print("Adding ", item.id)
                             tmp = []  # resetting gallery image list
-                    except Exception:
-                        # Not a Gallery
+                    except Exception as e:  # Not a Gallery
+                        print('exception', e)
                         if not downloaded_images.get(item.id):
                             post_list[item.id] = item.url
                             print("Adding ", item.id)
@@ -73,7 +76,7 @@ def getSavedImages(reddit, downloaded_images):
     return post_list
 
 
-def downloadImage(url: str, filepath: str) -> requests.models.Response:
+def download_image(url: str, filepath: str) -> requests.models.Response:
     r = requests.get(url)
     with open(filepath, 'wb') as f:
         f.write(r.content)
@@ -81,15 +84,15 @@ def downloadImage(url: str, filepath: str) -> requests.models.Response:
     return r
 
 
-def imageDownloader(post_list, downloaded_images):
-    if not len(post_list.keys()):
+def download_manager(post_list, downloaded_images):
+    if len(post_list.keys()) == 0:  # check if there are any images to download
         print("All images are downloaded\nNothing to download\nExiting")
         quit(2)
     success = 0
     failed = 0
     total = 0
 
-    with open(data_folder+'/download_path.txt', 'r') as d:
+    with open(data_folder + '/download_path.txt', 'r') as d:
         download_path = d.read()
     if not len(download_path):
         print("\nPlease select download folder in the dialog\n")
@@ -108,7 +111,7 @@ def imageDownloader(post_list, downloaded_images):
             for index, data in enumerate(link):
                 print('downloading', key, str(index + 1) + '.png')
                 total += 1
-                response = downloadImage(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
+                response = download_image(data, download_path + '{}_'.format(key) + '{}.png'.format(index + 1))
                 if response.ok:
                     tmp.append(data)
                     success += 1
@@ -126,7 +129,7 @@ def imageDownloader(post_list, downloaded_images):
         else:
             print('downloading', key + '.png')
             total += 1
-            response = downloadImage(link, download_path + "{}.png".format(key))
+            response = download_image(link, download_path + "{}.png".format(key))
             if response.ok:
                 downloaded_images.update({key: link})
                 success += 1
@@ -134,7 +137,6 @@ def imageDownloader(post_list, downloaded_images):
             else:
                 failed += 1
                 print("failed to download", key + '.png')
-                print(e)
         time.sleep(0.5)
 
     dumpPickle(old_wallpaper_list, downloaded_images)
@@ -146,20 +148,21 @@ def imageDownloader(post_list, downloaded_images):
 
 
 if __name__ == '__main__':
-    createFiles()
-    try:
-        token = redditAuthCheck()
-    except Exception as e:
-        print("Error getting token")
-        print(e)
-        quit(-1)
+    if not os.path.exists(config) or not os.path.exists(wallpaper_list):
+        run_setup()
+    else:
+        client_details = load_clientid()
 
-    reddit = praw.Reddit(
-        client_id='63NRVVv_imYBeWE9Dwb-eg',
-        client_secret=None,
-        refresh_token=token,
-        user_agent='A src to download wallpapers',
-    )
-    downloaded_images = readPickle(old_wallpaper_list)
-    posts = getSavedImages(reddit, downloaded_images)
-    imageDownloader(posts, downloaded_images)
+        with open('wall-py/config.json', 'r') as f:  # open the config.json
+            config = json.load(f)  # load the JSON data from the file
+
+        reddit = praw.Reddit(
+            client_id=client_details[0],
+            client_secret=client_details[1],
+            refresh_token=config['refresh_token'],
+            user_agent='A src to download wallpapers',
+        )
+
+        get_saved_images()
+
+        # run_downloader(reddit)

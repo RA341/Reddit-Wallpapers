@@ -1,10 +1,7 @@
-import configparser
-
 import praw
 import random
 import webbrowser
 import socket
-from modules.file_manager import dumpPickle, readPickle, token_path
 
 
 def receive_connection():
@@ -29,13 +26,10 @@ def send_message(client, message):
     client.close()
 
 
-def reddit_login():
-    config = configparser.ConfigParser()
-    config.read('../secret.ini')
-
+def reddit_login(client_credentials):  # client_credentials = [client_id,client_secret]
     reddit = praw.Reddit(
-        client_id=config['reddit']['client_id'],
-        client_secret=config['reddit']['client_secret'],
+        client_id=client_credentials[0],  # read the client_id
+        client_secret=client_credentials[0],  # read the client_secret
         user_agent='lets download some wallpapers',
         redirect_uri='http://localhost:8080',
     )
@@ -63,4 +57,3 @@ def reddit_login():
     refresh_token = reddit.auth.authorize(params["code"])
     send_message(client, "Feel free to close this window\nRefresh token: {}".format(refresh_token))
     return refresh_token
-
