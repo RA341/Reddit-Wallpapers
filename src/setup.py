@@ -1,4 +1,5 @@
-import configparser
+import tkinter as tk
+from tkinter import filedialog
 import json
 import os
 
@@ -27,12 +28,17 @@ class Setup:
             os.makedirs(self.root_path)
         # create config.json and load empty data
         if os.path.exists(self.config_path) is False:
+            print("\nPlease select download folder in the dialog\n")
+            root = tk.Tk()
+            root.withdraw()
+            down = filedialog.askdirectory() + "/"  # tmp var to store download path
+
             data = {
                 'client_id': None,
                 'client_secret': None,
                 'refresh_token': None,
                 'subreddit_list': ['wallpaper', 'wallpapers'],
-                'download_path': None
+                'download_path': down
             }
             with open(self.config_path, 'w') as outfile:
                 json.dump(data, outfile)
