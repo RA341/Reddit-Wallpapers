@@ -132,5 +132,6 @@ dmypy.json
 preferences/
 test/
 Install/install test
-/secret.ini
+/Install/secret.ini
 /wall-py/
+/Install/
