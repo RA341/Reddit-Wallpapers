@@ -3,6 +3,7 @@ import os
 import time
 
 import praw
+import prawcore
 import requests
 
 from setup import Setup
@@ -57,7 +58,7 @@ def get_saved_images(reddit, downloaded_images, config):
             if item.is_self is False:  # filter out text posts
                 try:
                     extract_gallery()
-                except Exception:  # Not a Gallery
+                except prawcore.exceptions.InsufficientScope:  # Not a Gallery (received 403 HTTP response)
                     if downloaded_images.get(item.id) is None:
                         downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
                         print("Adding ", item.id)
