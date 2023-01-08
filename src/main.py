@@ -138,7 +138,7 @@ class DownloadManager:
         stop = time.perf_counter()
         print("\nFinished in", round(stop - start), 's')
         print("Downloaded", self.success, 'images', 'out of', self.total)
-        if self.failed is not 0:
+        if self.failed != 0:
             print("self.failed to download", self.failed, 'images', 'out of', str(self.total) + "\n")
 
 
