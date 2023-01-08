@@ -3,7 +3,7 @@ from tkinter import filedialog
 import json
 import os
 
-from src.reddit_auth import reddit_login
+from reddit_auth import reddit_login
 
 
 class Setup:
