@@ -19,19 +19,6 @@ def get_saved_images(reddit, downloaded_images, config):
     print("Initializing please wait....")
     saved = []
 
-    def extract_gallery():
-        tmp = []
-        if item.is_gallery:  # check for gallery
-            if downloaded_images.get(item.id) is None:  # add to list if not already added
-                for i in list(item.media_metadata):
-                    # replace preview link with actual link (preview.reddit -> i.reddit)
-                    link = item.media_metadata[i]['s']['u'].replace('preview', 'i').split('?')[0]
-                    tmp.append([link, False])  # assign initial download value of false
-                downloaded_images[item.id] = tmp
-                print("Adding ", item.id)
-            else:
-                print("Skipping", item.id, 'already added')
-
     subreddits = config['subreddit_list']
 
     if not len(subreddits):
@@ -52,18 +39,31 @@ def get_saved_images(reddit, downloaded_images, config):
         print(e)
         quit(-1)
 
-    print("Filtering posts")
+    print("Filtering posts...")
     for item in saved:
-        if str(item.subreddit) in subreddits:
-            if item.is_self is False:  # filter out text posts
-                try:
-                    extract_gallery()
-                except prawcore.exceptions.InsufficientScope:  # Not a Gallery (received 403 HTTP response)
-                    if downloaded_images.get(item.id) is None:
-                        downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
-                        print("Adding ", item.id)
-                    else:
-                        print("Skipping", item.id, 'already added')
+        if str(item.subreddit) not in subreddits:  # skip if subreddit not in list
+            continue
+        if item.is_self is True:  # skip if text posts
+            continue
+        try:
+            tmp = []
+            if item.is_gallery is False:  # skip if not gallery
+                continue
+            if downloaded_images.get(item.id) is None:  # add to list if not already added
+                for i in list(item.media_metadata):
+                    # replace preview link with actual link (preview.reddit -> i.reddit)
+                    link = item.media_metadata[i]['s']['u'].replace('preview', 'i').split('?')[0]
+                    tmp.append([link, False])  # assign initial download value of false
+                downloaded_images[item.id] = tmp
+                print("Adding ", item.id)
+            else:
+                print("Skipping", item.id, 'already added')
+        except prawcore.exceptions.InsufficientScope:  # Not a Gallery (received 403 HTTP response)
+            if downloaded_images.get(item.id) is None:
+                downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
+                print("Adding ", item.id)
+            else:
+                print("Skipping", item.id, 'already added')
 
     stop = time.perf_counter()
 
@@ -163,4 +163,4 @@ if __name__ == '__main__':
     )
 
     get_saved_images(reddit, downloaded_wallpapers, config)
-    #download_manager(config['download_path'])
+    # download_manager(config['download_path'])
