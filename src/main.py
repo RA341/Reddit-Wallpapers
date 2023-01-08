@@ -119,7 +119,7 @@ class DownloadManager:
             if isinstance(url_list[0], list):  # if gallery
                 for index, data in enumerate(url_list):
                     if data[1] is True:  # skip if already downloaded
-                        print(f'Skipping {key} already downloaded')
+                        print(f'Skipping {key}_{index + 1} already downloaded')
                         continue
                     print('downloading', key, str(index + 1) + '.png')
                     self.download_status(url_list[0], f"{self.download_path}{key}_{index + 1}.png",
