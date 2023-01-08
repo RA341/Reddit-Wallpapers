@@ -3,6 +3,7 @@ import os
 import time
 
 import praw
+import prawcore
 import requests
 
 from setup import Setup
@@ -57,7 +58,7 @@ def get_saved_images(reddit, downloaded_images, config):
             if item.is_self is False:  # filter out text posts
                 try:
                     extract_gallery()
-                except Exception:  # Not a Gallery
+                except prawcore.exceptions.InsufficientScope:  # Not a Gallery (received 403 HTTP response)
                     if downloaded_images.get(item.id) is None:
                         downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
                         print("Adding ", item.id)
@@ -69,7 +70,6 @@ def get_saved_images(reddit, downloaded_images, config):
     print("\nFound", len(downloaded_images), "saved posts from matching subreddits")
     print("time taken ", round(stop - start), 's\n')
 
-    print(downloaded_images)
     with open(wallpaper_list, 'w') as f:
         json.dump(downloaded_images, f)
 
@@ -163,4 +163,4 @@ if __name__ == '__main__':
     )
 
     get_saved_images(reddit, downloaded_wallpapers, config)
-    download_manager(config['download_path'])
+    #download_manager(config['download_path'])
