@@ -82,64 +82,66 @@ def download_image(url: str, filepath: str) -> requests.models.Response:
     return r
 
 
-class DownloadManager:
-    success, failed, total = 0, 0, 0
+def download_manager(download_path):
+    print('Downloading images...')
 
-    def __init__(self, download_path):
-        print('Downloading images...')
-        self.download_path = download_path
-        with open(wallpaper_list, 'r') as _:
-            self.image_list = json.load(_)
-        self.main()
+    with open(wallpaper_list, 'r') as f:
+        downloaded_images = json.load(f)
 
-    def download_status(self, url, download_path, key):
-        self.total += 1
-        response = download_image(url, download_path)
-        if response.ok:
-            self.image_list[key][1] = True
-            self.success += 1
-        else:
-            self.failed += 1
-            print("failed to download", key + '.png')
-        time.sleep(0.2)
+    if len(downloaded_images.keys()) == 0:  # check if there are any images to download
+        print("All images are downloaded\nNothing to download\nExiting")
+        quit(0)
+    success = 0
+    failed = 0
+    total = 0
 
-    def filters(self):
-        if len(self.image_list.keys()) == 0:  # check if there are any images to download
-            print("All images are downloaded\nNothing to download\nExiting")
-            quit(0)
+    if not len(download_path):
+        print('No download path found please add it in', os.path.abspath(config))
+        quit(-1)
 
-        if not len(self.download_path):  # check if download path exits
-            print('No download path found please add it in', os.path.abspath(config))
-            quit(-1)
-
-    def main(self):
-        start = time.perf_counter()
-        for key in self.image_list.keys():
-            url_list = self.image_list.get(key)
-            if isinstance(url_list[0], list):  # if gallery
-                for index, data in enumerate(url_list):
-                    if data[1] is True:  # skip if already downloaded
-                        print(f'Skipping {key}_{index + 1} already downloaded')
-                        continue
+    start = time.perf_counter()
+    for key in downloaded_images.keys():
+        url_list = downloaded_images.get(key)
+        if isinstance(url_list[0], list):  # if gallery
+            for index, data in enumerate(url_list):
+                if data[1] is True:
+                    print('Skipping... gallery')
+                else:
                     print('downloading', key, str(index + 1) + '.png')
-                    self.download_status(url_list[0], f"{self.download_path}{key}_{index + 1}.png",
-                                         f'{key}_{index + 1}')
+                    total += 1
+                    response = download_image(data[0], f'{download_path}{key}_{index + 1}.png')
+                    if response.ok:
+                        success += 1
+                        downloaded_images[key][index][1] = True  # set status to true if downloaded
+                    else:
+                        failed += 1
+                        print(f"failed to download {key} {str(index + 1)}.png")
+                        print(f'"Response", {response.status_code} + ":" + {response.reason}')
+                    time.sleep(0.1)
+        else:
+            if url_list[1] is True:
+                print('Skipping... image')
             else:
-                if url_list[1] is True:  # skip if already downloaded
-                    print(f'Skipping {key} already downloaded')
-                    continue
-
                 print('downloading', key + '.png')
-                self.download_status(url_list[0], f"{self.download_path}{key}.png", key)
+                total += 1
+                response = download_image(url_list[0], download_path + "{}.png".format(key))
+                if response.ok:
+                    downloaded_images[key][1] = True
+                    success += 1
+                else:
+                    failed += 1
+                    print("failed to download", key + '.png')
+                time.sleep(0.3)
 
-        with open(wallpaper_list, 'w') as _:
-            json.dump(self.image_list, _)
+    with open(wallpaper_list, 'w') as f:
+        json.dump(downloaded_images, f)
 
-        stop = time.perf_counter()
-        print("\nFinished in", round(stop - start), 's')
-        print("Downloaded", self.success, 'images', 'out of', self.total)
-        if self.failed != 0:
-            print("self.failed to download", self.failed, 'images', 'out of', str(self.total) + "\n")
+    stop = time.perf_counter()
+    print("\nFinished in", round(stop - start), 's')
+    print("Downloaded", success, 'images', 'out of', total)
+    if failed:
+        print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
+
 
 
 if __name__ == '__main__':
@@ -162,4 +164,4 @@ if __name__ == '__main__':
     )
 
     get_saved_images(reddit, downloaded_wallpapers, config)
-    DownloadManager(config['download_path'])
+    download_manager(config['download_path'])
