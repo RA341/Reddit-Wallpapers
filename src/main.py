@@ -16,7 +16,6 @@ wallpaper_list = root + '/download_history.json'
 
 def get_saved_images(reddit, downloaded_images, config):
     print("Initializing please wait....")
-    posts_list = {}
     saved = []
 
     def extract_gallery():
@@ -52,21 +51,18 @@ def get_saved_images(reddit, downloaded_images, config):
         print(e)
         quit(-1)
 
-    try:
-        print("Filtering posts")
-        for item in saved:
-            if str(item.subreddit) in subreddits:
-                if item.is_self is False:  # filter out text posts
-                    try:
-                        extract_gallery()
-                    except Exception:  # Not a Gallery
-                        if downloaded_images.get(item.id) is None:
-                            downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
-                            print("Adding ", item.id)
-                        else:
-                            print("Skipping", item.id, 'already added')
-    except Exception as e:
-        print("curses", e)
+    print("Filtering posts")
+    for item in saved:
+        if str(item.subreddit) in subreddits:
+            if item.is_self is False:  # filter out text posts
+                try:
+                    extract_gallery()
+                except Exception:  # Not a Gallery
+                    if downloaded_images.get(item.id) is None:
+                        downloaded_images[item.id] = [item.url, False]  # assign initial download value of false
+                        print("Adding ", item.id)
+                    else:
+                        print("Skipping", item.id, 'already added')
 
     stop = time.perf_counter()
 
