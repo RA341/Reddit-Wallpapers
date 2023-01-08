@@ -16,6 +16,7 @@ wallpaper_list = root + '/download_history.json'
 
 def get_saved_images(reddit, downloaded_images, config):
     print("Initializing please wait....")
+    posts_list = {}
     saved = []
 
     def extract_gallery():
