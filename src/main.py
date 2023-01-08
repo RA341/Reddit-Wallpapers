@@ -105,7 +105,7 @@ def download_manager(download_path):
         if isinstance(url_list[0], list):  # if gallery
             for index, data in enumerate(url_list):
                 if data[1] is True:
-                    print('Skipping... gallery')
+                    print(f'Skipping {key}... downloaded')
                 else:
                     print('downloading', key, str(index + 1) + '.png')
                     total += 1
@@ -120,7 +120,7 @@ def download_manager(download_path):
                     time.sleep(0.1)
         else:
             if url_list[1] is True:
-                print('Skipping... image')
+                print(f'Skipping {key}... downloaded')
             else:
                 print('downloading', key + '.png')
                 total += 1
