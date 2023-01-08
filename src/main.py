@@ -70,7 +70,6 @@ def get_saved_images(reddit, downloaded_images, config):
     print("\nFound", len(downloaded_images), "saved posts from matching subreddits")
     print("time taken ", round(stop - start), 's\n')
 
-    print(downloaded_images)
     with open(wallpaper_list, 'w') as f:
         json.dump(downloaded_images, f)
 
@@ -164,4 +163,4 @@ if __name__ == '__main__':
     )
 
     get_saved_images(reddit, downloaded_wallpapers, config)
-    download_manager(config['download_path'])
+    #download_manager(config['download_path'])
