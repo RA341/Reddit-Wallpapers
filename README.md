@@ -7,7 +7,7 @@ I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallp
 
 # Pre-Requisite
 * [Python installation](https://www.tutorialspoint.com/how-to-install-python-in-windows), [added to windows path](https://datatofish.com/add-python-to-windows-path/)
-* Get the client_id and client_secret for the [reddit api](https://www.reddit.com/prefs/apps) ([follow this guide](https://redditclient.readthedocs.io/en/latest/oauth/)) 
+* Get the ```client_id``` and ```client_secret``` from the [reddit api](https://www.reddit.com/prefs/apps) ([follow this guide](https://redditclient.readthedocs.io/en/latest/oauth/)) 
 
 # Installation
 * Download the ```src``` directory and ```requirments.txt```
