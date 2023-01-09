@@ -6,7 +6,7 @@ import socket
 
 def receive_connection():
     """
-    Wait for and then return a connected socket..
+    Wait for and then return a connected socket.
     Opens a TCP connection on port 8080, and waits for a single client.
     """
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

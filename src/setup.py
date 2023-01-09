@@ -61,7 +61,7 @@ class Setup:
                                self.settings['client_secret'])  # authorise using reddit_auth.py
             if tmp != 1:  # check if function returns 1(error) or token
                 self.settings['refresh_token'] = tmp
-                self.file_obj.seek(0)  # move cursor to start of the file for overwriting else appends it to end of file
+                self.file_obj.seek(0)  # move cursor to start of the file to overwrite else appends it to end of file
                 json.dump(self.settings, self.file_obj)  # write to file
                 self.file_obj.close()
             else:
