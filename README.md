@@ -1,36 +1,29 @@
-# Why
-I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and [r/wallpapers](https://www.reddit.com/r/wallpapers/), so I created this script to automate the whole process.
+# reddit-image-downloader
+I love the wallpapers shared on the [r/wallpaper](https://www.reddit.com/r/wallpaper/) and [r/wallpapers](https://www.reddit.com/r/wallpapers/), so I created this script to download wallpapers automatically.
 
 * Save the post on reddit.
 * Run the script.
-* PROFIT !!
 * The script will automatically download the images to a folder of your choice.
 
 # Pre-Requisite
-* Windows 10
 * [Python installation](https://www.tutorialspoint.com/how-to-install-python-in-windows), [added to windows path](https://datatofish.com/add-python-to-windows-path/)
-
+* Get the client_id and client_secret for the [reddit api](https://www.reddit.com/prefs/apps) ([follow this guide](https://redditclient.readthedocs.io/en/latest/oauth/)) 
 
 # Installation
-* Download - [install.ps1](https://github.com/RA341/reddit-image-downloader/releases/download/v1.0.0/install.ps1)
-* run script with powershell
-
-or (if you don't want to install the powershell script)
-
-* Download - ```main.py```, ```subredits.txt``` and ```modules``` directory
+* Download the ```src``` directory and ```requirments.txt```
+* Open cmd/powershell/terminal 
+* Install required libraries by ```pip install -r requirments.txt``` 
 * run ```main.py``` with python
 
 
 # Usage
+* run script using ```python (path to file)/main.py```.
+* In your preferences folder add your preferred subreddits in ```config.json``` in the ```subreddit_list``` section.
 
-## Notice
+## Note
 * You need to be logged in to reddit on your default browser.
-* If you are not logged in the script wont be able to get the details it needs.
-* This is a known bug.
+* If you are not logged in the script won't be able to get the details it needs.
 
-In your preferences folder add your preferred subreddits in ```subreddit.txt```.
 
-run script using ```python (path to file)/main.py```.
 
-Optionally-you can add main.py to a task schedule that will run automatically.
 
