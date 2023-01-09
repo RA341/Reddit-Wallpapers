@@ -93,19 +93,18 @@ def download_image(url: str, filepath: str) -> requests.models.Response:
 def download_manager(download_path):
     print('Downloading images...')
 
+    if not len(download_path):
+        print('No download path found please add it in', os.path.abspath(config))
+        quit(-1)
+
     with open(wallpaper_list, 'r') as _:
         downloaded_images = json.load(_)
 
     if len(downloaded_images.keys()) == 0:  # check if there are any images to download
         print("All images are downloaded\nNothing to download\nExiting")
         quit(0)
-    success = 0
-    failed = 0
-    total = 0
 
-    if not len(download_path):
-        print('No download path found please add it in', os.path.abspath(config))
-        quit(-1)
+    success, failed, total = 0, 0, 0
 
     start = time.perf_counter()
     for key in downloaded_images.keys():
