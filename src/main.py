@@ -10,9 +10,9 @@ from setup import Setup
 
 # folder paths :
 # WARNING DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING
-root = './wall-py'
-config = root + '/config.json'
-wallpaper_list = root + '/download_history.json'
+root = os.path.abspath('./wall-py')
+config = os.path.abspath(root + '/config.json')
+wallpaper_list = os.path.abspath(root + '/download_history.json')
 
 
 def get_saved_images(downloaded_images, settings):
@@ -165,4 +165,4 @@ if __name__ == '__main__':
         downloaded_wallpapers = json.load(f)  # load the JSON data from the file
 
     get_saved_images(downloaded_wallpapers, config)
-    # download_manager(config['download_path'])
+    download_manager(config['download_path'])
