@@ -15,15 +15,23 @@ config = root + '/config.json'
 wallpaper_list = root + '/download_history.json'
 
 
-def get_saved_images(reddit, downloaded_images, config):
+def get_saved_images(downloaded_images, settings):
     print("Initializing please wait....")
+
+    reddit = praw.Reddit(
+        client_id=settings['client_id'],  # read the client_id
+        client_secret=settings['client_secret'],  # read the client_secret
+        refresh_token=settings['refresh_token'],
+        user_agent='A src to download wallpapers',
+    )
+
     saved = []
 
-    subreddits = config['subreddit_list']
+    subreddits = settings['subreddit_list']
 
     if not len(subreddits):
         print("Warning!!, no subreddits found")
-        print("Add your subreddits in", config)
+        print("Add your subreddits in", settings)
         print('Then run the script again')
         quit(-1)
 
@@ -70,23 +78,23 @@ def get_saved_images(reddit, downloaded_images, config):
     print("\nFound", len(downloaded_images), "saved posts from matching subreddits")
     print("time taken ", round(stop - start), 's\n')
 
-    with open(wallpaper_list, 'w') as f:
-        json.dump(downloaded_images, f)
+    with open(wallpaper_list, 'w') as _:
+        json.dump(downloaded_images, _)
 
 
 def download_image(url: str, filepath: str) -> requests.models.Response:
     r = requests.get(url)
-    with open(filepath, 'wb') as f:
-        f.write(r.content)
-    f.close()
+    with open(filepath, 'wb') as file:
+        file.write(r.content)
+    file.close()
     return r
 
 
 def download_manager(download_path):
     print('Downloading images...')
 
-    with open(wallpaper_list, 'r') as f:
-        downloaded_images = json.load(f)
+    with open(wallpaper_list, 'r') as _:
+        downloaded_images = json.load(_)
 
     if len(downloaded_images.keys()) == 0:  # check if there are any images to download
         print("All images are downloaded\nNothing to download\nExiting")
@@ -131,17 +139,17 @@ def download_manager(download_path):
                 else:
                     failed += 1
                     print("failed to download", key + '.png')
+                    print(f'"Response", {response.status_code} + ":" + {response.reason}')
                 time.sleep(0.3)
 
-    with open(wallpaper_list, 'w') as f:
-        json.dump(downloaded_images, f)
+    with open(wallpaper_list, 'w') as _:
+        json.dump(downloaded_images, _)
 
     stop = time.perf_counter()
     print("\nFinished in", round(stop - start), 's')
     print("Downloaded", success, 'images', 'out of', total)
     if failed:
         print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
-
 
 
 if __name__ == '__main__':
@@ -156,12 +164,5 @@ if __name__ == '__main__':
     with open(wallpaper_list, 'r') as f:  # open the config.json
         downloaded_wallpapers = json.load(f)  # load the JSON data from the file
 
-    reddit = praw.Reddit(
-        client_id=config['client_id'],  # read the client_id
-        client_secret=config['client_secret'],  # read the client_secret
-        refresh_token=config['refresh_token'],
-        user_agent='A src to download wallpapers',
-    )
-
-    get_saved_images(reddit, downloaded_wallpapers, config)
-    download_manager(config['download_path'])
+    get_saved_images(downloaded_wallpapers, config)
+    # download_manager(config['download_path'])
