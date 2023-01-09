@@ -1,18 +1,17 @@
 import json
-import os
+from os import path
 import time
-
 import praw
 import prawcore
 import requests
 
-from setup import Setup
+from src.modules.setup import Setup
 
 # folder paths :
 # WARNING DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING
-root = os.path.abspath('./wall-py')
-config = os.path.abspath(root + '/config.json')
-wallpaper_list = os.path.abspath(root + '/download_history.json')
+root = path.abspath('./wall-py')
+config = path.abspath(root + '/config.json')
+wallpaper_list = path.abspath(root + '/download_history.json')
 
 
 def get_saved_images(downloaded_images, settings):
@@ -92,9 +91,8 @@ def download_image(url: str, filepath: str) -> requests.models.Response:
 
 def download_manager(download_path):
     print('Downloading images...')
-
     if not len(download_path):
-        print('No download path found please add it in', os.path.abspath(config))
+        print('No download path found please add it in', path.abspath(config))
         quit(-1)
 
     with open(wallpaper_list, 'r') as _:
@@ -147,12 +145,12 @@ def download_manager(download_path):
     stop = time.perf_counter()
     print("\nFinished in", round(stop - start), 's')
     print("Downloaded", success, 'images', 'out of', total)
-    if failed:
+    if failed != 0:
         print("Failed to download", failed, 'images', 'out of', str(total) + "\n")
 
 
 if __name__ == '__main__':
-    if os.path.exists(config) is False or os.path.exists(wallpaper_list) is False:
+    if path.exists(config) is False or path.exists(wallpaper_list) is False:
         print('Running Setup (this will happen only once)')
         Setup(root, config, wallpaper_list)
 
