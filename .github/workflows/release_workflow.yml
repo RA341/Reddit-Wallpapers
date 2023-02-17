@@ -1,0 +1,24 @@
+name: Release Subdirectory
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          submodules: recursive
+
+      - name: Build and release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v1.0.0
+          prerelease: false
+          files: src/*
